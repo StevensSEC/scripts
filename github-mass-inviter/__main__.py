@@ -14,6 +14,7 @@ emails = []
 print("Getting user ids...")
 
 for user in users:
+	user = user.strip()
 	if "@" in user:
 		emails.append(user)
 	else:
