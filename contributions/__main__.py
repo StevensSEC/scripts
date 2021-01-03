@@ -47,6 +47,7 @@ while check_id_selection(user_id_selection) != "OK":
 
     if check_id_selection(user_id_selection) == "Not an int":
         print(f"{user_id_selection} is not a valid option, input an int to select a project")
+        continue
     user_id_selection = int(user_id_selection)
     if check_id_selection(user_id_selection) == "Out of range":
         print(f"Selection {user_id_selection} was not listed")
