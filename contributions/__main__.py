@@ -104,3 +104,10 @@ pull_requests = list(set(pull_requests))
 
 """Display lists"""
 
+print("\nUsers who contributed on this board:")
+for user in users:
+    print(user)
+
+print("\nPull requests and issues referenced on this board:")
+for pull_request in pull_requests:
+    print(pull_request)
