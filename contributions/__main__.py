@@ -100,6 +100,7 @@ for note in notes:
     if match:
         pull_requests.append(match.group())
 
+pull_requests = list(set(pull_requests))
+
 """Display lists"""
 
-print(pull_requests)
