@@ -2,6 +2,7 @@
 from collections import namedtuple
 import os
 import requests
+import re
 from requests.auth import HTTPBasicAuth
 
 """Download metadata for all StevensSEC projects"""
@@ -67,10 +68,11 @@ for columns_json in resp.json():
     columns.append(ProjectColumn(columns_json["id"], columns_json["name"]))
 
 # May be a bit brittle, requires that all contribution boards have "pull request" in their column name
-columns = [x for x in columns if "Pull request" in x.name]
+columns = [column for column in columns if "Pull request" in column.name]
 
 """Create a list of all users who added a card in project columns"""
 users = []
+notes = []
 
 for column in columns:
     resp = requests.get(f"https://api.github.com/projects/columns/{column.github_id}/cards",
@@ -78,11 +80,26 @@ for column in columns:
                     auth=auth)
     for card_json in resp.json():
         users.append(card_json["creator"]["login"])
+        notes.append(card_json["note"])
 
 # Filter out duplicates
 users = list(set(users))
 
 """Create a list of all referenced pull requests from project column for submitted pull requests"""
 
+pull_requests = []
+
+# Split all notes into their component lines
+notes = [note.split("\n") for note in notes]
+# Flatten list
+notes = [note for note_list in notes for note in note_list]
+# Check all lines
+for note in notes:
+#   If line is a pull request url
+    match = re.search(r"https://github.com/(\w|\d)+/(\w|\d)+/(pull|issues)/\d+", note)
+    if match:
+        pull_requests.append(match.group())
 
 """Display lists"""
+
+print(pull_requests)
