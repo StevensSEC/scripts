@@ -5,7 +5,7 @@ import requests
 import re
 from requests.auth import HTTPBasicAuth
 
-"""Download metadata for all StevensSEC projects"""
+# Download metadata for all StevensSEC projects
 auth = HTTPBasicAuth(os.environ["GITHUB_USERNAME"], os.environ["GITHUB_TOKEN"])
 
 projects = []
@@ -13,7 +13,7 @@ resp = requests.get(f"https://api.github.com/orgs/StevensSEC/projects",
                     headers={'Accept': 'application/vnd.github.inertia-preview.json'},
                     auth=auth)
 
-"""Generate list of all projects paired with their project id"""
+# Generate list of all projects paired with their project id
 
 Project = namedtuple('Project', 'option_id github_id name')
 next_option_id = 0
@@ -21,7 +21,7 @@ for project_json in resp.json():
     projects.append(Project(next_option_id, project_json["id"], project_json["name"]))
     next_option_id += 1
 
-"""Prompt user to select project from project titles"""
+# Prompt user to select project from project titles
 print("Select a project: \n")
 
 def print_project_option(project):
@@ -58,7 +58,7 @@ for project in projects:
     if project.option_id == user_id_selection:
         selected_project = project
 
-"""Download metadata for project columns"""
+# Download metadata for project columns
 resp = requests.get(f"https://api.github.com/projects/{selected_project.github_id}/columns",
                     headers={'Accept': 'application/vnd.github.inertia-preview.json'},
                     auth=auth)
@@ -71,7 +71,7 @@ for columns_json in resp.json():
 # May be a bit brittle, requires that all contribution boards have "pull request" in their column name
 columns = [column for column in columns if "Pull request" in column.name]
 
-"""Create a list of all users who added a card in project columns"""
+# Create a list of all users who added a card in project columns
 users = []
 notes = []
 
@@ -86,7 +86,7 @@ for column in columns:
 # Filter out duplicates
 users = list(set(users))
 
-"""Create a list of all referenced pull requests from project column for submitted pull requests"""
+# Create a list of all referenced pull requests from project column for submitted pull requests
 
 pull_requests = []
 
@@ -103,7 +103,7 @@ for note in notes:
 
 pull_requests = list(set(pull_requests))
 
-"""Display lists"""
+# Display lists
 
 print("\nUsers who contributed on this board:")
 for user in users:
