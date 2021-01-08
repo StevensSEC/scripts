@@ -69,7 +69,7 @@ for columns_json in resp.json():
     columns.append(ProjectColumn(columns_json["id"], columns_json["name"]))
 
 # May be a bit brittle, requires that all contribution boards have "pull request" in their column name
-columns = [column for column in columns if "Pull request" in column.name]
+columns = [column for column in columns if "pull request" in column.name.lower()]
 
 # Create a list of all users who added a card in project columns
 users = []
@@ -97,8 +97,7 @@ notes = [note for note_list in notes for note in note_list]
 # Check all lines
 for note in notes:
 #   If line is a pull request url
-    match = re.search(r"https://github.com/(\w|\d)+/(\w|\d)+/(pull|issues)/\d+", note)
-    if match:
+    if (match := re.search(r"https://github.com/(\w|\d)+/(\w|\d)+/(pull|issues)/\d+", note)):
         pull_requests.append(match.group())
 
 pull_requests = list(set(pull_requests))
