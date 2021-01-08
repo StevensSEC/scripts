@@ -3,6 +3,8 @@ from collections import namedtuple
 import os
 import requests
 import re
+import sys
+import json
 from requests.auth import HTTPBasicAuth
 
 # Download metadata for all StevensSEC projects
@@ -22,13 +24,21 @@ for project_json in resp.json():
     next_option_id += 1
 
 # Prompt user to select project from project titles
-print("Select a project: \n")
+
+def do_prompt():
+    print("Select a project: \n")
+    for project in projects:
+        print_project_option(project)
+
+    user_id_selection = -1
+    while check_id_selection(user_id_selection) != "OK":
+        user_id_selection = input()
+        print_selection_error(user_id_selection)
+
+    return int(user_id_selection)
 
 def print_project_option(project):
     print(f"{project.option_id}: {project.name} \n")
-
-for project in projects:
-    print_project_option(project)
 
 def check_id_selection(selection):
     try:
@@ -36,27 +46,38 @@ def check_id_selection(selection):
     except:
         return "Not an int"
 
-    if selection  > next_option_id - 1 or selection < 0:
+    if selection > next_option_id - 1 or selection < 0:
         return "Out of range"
 
     return "OK"
 
-user_id_selection = -1
-while check_id_selection(user_id_selection) != "OK":
-    user_id_selection = input()
+def print_selection_error(selection):
+    if check_id_selection(selection) == "Not an int":
+        print(f"{selection} is not a valid option, input an int to select a project")
+        return
+    user_id_selection = int(selection)
+    if check_id_selection(selection) == "Out of range":
+        print(f"Selection {selection} was not listed")
 
-    if check_id_selection(user_id_selection) == "Not an int":
-        print(f"{user_id_selection} is not a valid option, input an int to select a project")
-        continue
-    user_id_selection = int(user_id_selection)
-    if check_id_selection(user_id_selection) == "Out of range":
-        print(f"Selection {user_id_selection} was not listed")
+selected_project = None
+if len(sys.argv) < 2:
+    user_id_selection = do_prompt()
 
-# Get the selected project
-selected_project = Project(-1, -1, "You shouldnt ever see this.")
-for project in projects:
-    if project.option_id == user_id_selection:
-        selected_project = project
+    # Get the selected project
+    for project in projects:
+        if project.option_id == user_id_selection:
+            selected_project = project
+    assert selected_project != None
+else:
+    selected_project_name = sys.argv[1]
+
+    for project in projects:
+        if project.name.lower() == selected_project_name.lower():
+            selected_project = project
+
+    if selected_project == None:
+        print(f"Was unable to find a project with the name {selected_project_name}")
+        sys.exit()
 
 # Download metadata for project columns
 resp = requests.get(f"https://api.github.com/projects/{selected_project.github_id}/columns",
@@ -104,10 +125,6 @@ pull_requests = list(set(pull_requests))
 
 # Display lists
 
-print("\nUsers who contributed on this board:")
-for user in users:
-    print(user)
+output = {"contributors": users, "referenced_prs": pull_requests}
+json.dump(output, sys.stdout, indent="\t")
 
-print("\nPull requests and issues referenced on this board:")
-for pull_request in pull_requests:
-    print(pull_request)
