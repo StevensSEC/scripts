@@ -126,5 +126,7 @@ pull_requests = list(set(pull_requests))
 # Display lists
 
 output = {"contributors": users, "referenced_prs": pull_requests}
-json.dump(output, sys.stdout, indent="\t")
 
+# Create an output file if the user used the prompt, else output directly to stdout
+output_file = open("output.json", "x+") if len(sys.argv) < 2 else sys.stdout
+json.dump(output, output_file, indent="\t")
