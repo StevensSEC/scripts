@@ -5,14 +5,12 @@
 
 # Usage
 
-1. Add your Github username and token to the environment variables.
-
-2. Run
+1. Run
 ```bash
-python3 contributions [name]
+GITHUB_USERNAME=your_username GITHUB_TOKEN=your_token python3 contributions name
 ```
 
-where `[name]` is the name of the contributions board that you would like to summarize. A successful run will result in a JSON summary being printed.
+where `your_username` is your Github username, `your_token` is a Github token with admin:org priveleges, and `name` is the name of the contributions board that you would like to summarize. A successful run will result in a JSON summary being printed.
 
 If you don't know the title of the contributions board that you would like or don't want to supply a name then instead run
 
