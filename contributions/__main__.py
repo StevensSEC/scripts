@@ -13,6 +13,7 @@ auth = HTTPBasicAuth(os.environ["GITHUB_USERNAME"], os.environ["GITHUB_TOKEN"])
 projects = []
 resp = requests.get(f"https://api.github.com/orgs/StevensSEC/projects",
                     headers={'Accept': 'application/vnd.github.inertia-preview.json'},
+                    params={'state':'all'},
                     auth=auth)
 
 # Generate list of all projects paired with their project id
