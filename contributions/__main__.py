@@ -119,7 +119,7 @@ notes = [note for note_list in notes for note in note_list]
 # Check all lines
 for note in notes:
 #   If line is a pull request url
-    if (match := re.search(r"https://github.com/(\w|\d)+/(\w|\d)+/(pull|issues)/\d+", note)):
+    if (match := re.search(r"https://github.com/[\w\.\d]+/[\w\.\d]+/(issues|pull)/\d+", note)):
         pull_requests.append(match.group())
 
 pull_requests = list(set(pull_requests))
