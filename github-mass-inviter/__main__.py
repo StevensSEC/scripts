@@ -28,13 +28,14 @@ for user in users:
 
 team_ids = []
 if len(sys.argv) > 1:
-	print("Grabbing team id...")
-	resp = requests.get(f"https://api.github.com/orgs/StevensSEC/teams/{sys.argv[1]}", auth=auth)
-	if resp.status_code == 200:
-		team_ids.append(resp.json()["id"])
-	else:
-		print("Failed to grab team ID:", resp.json())
-		sys.exit(1)
+	for team in sys.argv[1:]:
+		print(f"Grabbing team id for {team}...")
+		resp = requests.get(f"https://api.github.com/orgs/StevensSEC/teams/{team}", auth=auth)
+		if resp.status_code == 200:
+			team_ids.append(resp.json()["id"])
+		else:
+			print("Failed to grab team ID:", resp.json())
+			sys.exit(1)
 
 print(f"Adding {len(userids)} users by userid and {len(emails)} users by email to {team_ids}")
 
