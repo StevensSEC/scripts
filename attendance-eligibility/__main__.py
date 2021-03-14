@@ -2,7 +2,7 @@ from os import listdir
 import pandas as pd
 
 # Load DuckLink's attendance .csv files
-directory = './attendance/'
+directory = './attendance-eligibility/attendance/'
 files = [f for f in listdir(directory)]
 cols = ['First Name', 'Last Name', 'Email']
 
