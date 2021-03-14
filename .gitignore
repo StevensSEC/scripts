@@ -1,3 +1,2 @@
 .env/
 *.pyc
-attendance-eligibility/attendance/*.csv
