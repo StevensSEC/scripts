@@ -17,9 +17,10 @@ for file in files:
     event_name = df.at[1, 'First Name']
 
     # Trim everything up to the first and last names
-    df = df[5:]
+    starting_names_line_num = 6
+    df = df[starting_names_line_num:]
 
-    for i in range(5, len(df) + 5):
+    for i in range(starting_names_line_num, len(df) + starting_names_line_num):
 
         # Parse out some key information
         first_name = df.at[i, 'First Name']
@@ -41,8 +42,8 @@ for file in files:
 voting_members = {}
 
 for member, obj in members.items():
-    if obj.events_attended >= 3:
-        voting_members[member] = obj.events_attended
+    if obj['events_attended'] >= 3:
+        voting_members[member] = obj['events_attended']
 
 print(voting_members)
 
