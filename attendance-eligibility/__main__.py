@@ -2,7 +2,8 @@ from os import listdir
 import pandas as pd
 
 # Load DuckLink's attendance .csv files
-directory = './attendance/'
+directory = 'attendance-eligibility/' + \
+    input('Enter the name of the directory containing attendance csv files:\n') + '/'
 files = [f for f in listdir(directory)]
 cols = ['First Name', 'Last Name', 'Email']
 
@@ -17,9 +18,10 @@ for file in files:
     event_name = df.at[1, 'First Name']
 
     # Trim everything up to the first and last names
-    df = df[5:]
+    starting_names_line_num = 6
+    df = df[starting_names_line_num:]
 
-    for i in range(5, len(df) + 5):
+    for i in range(starting_names_line_num, len(df) + starting_names_line_num):
 
         # Parse out some key information
         first_name = df.at[i, 'First Name']
@@ -41,17 +43,7 @@ for file in files:
 voting_members = {}
 
 for member, obj in members.items():
-    if obj.events_attended >= 3:
-        voting_members[member] = obj.events_attended
+    if obj['events_attended'] >= 3:
+        voting_members[member] = obj['events_attended']
 
 print(voting_members)
-
-# query = input('Enter a club member\'s name (e.g.: \'Alex Smith\'):\n')
-# if query in members:
-#     print('\n' + query + ' has been to a total of ' + str(members[query]['events_attended']) +
-#           ' events!')
-#     print(query + ' has attended these events:')
-#     for event in members[query]['attended_events']:
-#         print(event)
-# else:
-#     print('That person has not attended any club events!')
